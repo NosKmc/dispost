@@ -12,6 +12,15 @@ function usage {
 
 url=YOUR WEBHOOK URL
 
+# パイプ時の処理
+if [ -p /dev/stdin ]; then
+	text=`cat -`;
+	curl $url -H "Content-Type: application/json" -d @-<<-EOS
+		{ "content": "$text" }
+	EOS
+	exit 0
+fi
+
 while getopts f:t: OPT; do
 	case $OPT in
 		t ) curl $url -H "Content-Type: application/json" -d @-<<-EOS
