@@ -1,0 +1,26 @@
+#!/bin/bash
+
+# help
+function usage {
+	cat <<-EOS
+	Usage: $(basename "$0") [OPTION]...
+		-t VALUE    post text
+		-f VALUE    post file
+	EOS
+	exit 2
+}
+
+url=YOUR WEBHOOK URL
+
+while getopts f:t: OPT; do
+	case $OPT in
+		t ) curl $url -H "Content-Type: application/json" -d @-<<-EOS
+				{ "content": "$OPTARG" }
+			EOS
+;;
+		f ) curl $url -H "Content-Type: multipart/form-data" -F "file=@$OPTARG";;
+		* ) usage;;
+	esac
+done
+
+exit 0
